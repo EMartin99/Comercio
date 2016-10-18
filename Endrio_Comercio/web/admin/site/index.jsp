@@ -48,7 +48,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script src="js/simpleCart.min.js"> </script>
 </head>
 <body>
-<!--header-->
+
 <div class="header">
 	<div class="header-top">
 		<div class="container">
@@ -57,7 +57,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			</div>
 			
 			
-<!-- search-scripts -->
+
 					<script src="js/classie.js"></script>
 					<script src="js/uisearch.js"></script>
 						<script>

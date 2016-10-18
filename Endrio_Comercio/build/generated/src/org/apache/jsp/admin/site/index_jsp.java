@@ -99,7 +99,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("<script src=\"js/simpleCart.min.js\"> </script>\n");
       out.write("</head>\n");
       out.write("<body>\n");
-      out.write("<!--header-->\n");
+      out.write("\n");
       out.write("<div class=\"header\">\n");
       out.write("\t<div class=\"header-top\">\n");
       out.write("\t\t<div class=\"container\">\n");
@@ -108,7 +108,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\t\t\t</div>\n");
       out.write("\t\t\t\n");
       out.write("\t\t\t\n");
-      out.write("<!-- search-scripts -->\n");
+      out.write("\n");
       out.write("\t\t\t\t\t<script src=\"js/classie.js\"></script>\n");
       out.write("\t\t\t\t\t<script src=\"js/uisearch.js\"></script>\n");
       out.write("\t\t\t\t\t\t<script>\n");
