@@ -136,7 +136,15 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                       <li>\n");
       out.write("                        <a href=\"../marca/\"><i class=\"fa fa-fw fa-bar-chart-o\"></i> Marca</a>\n");
       out.write("                    </li>\n");
-      out.write("                    \n");
+      out.write("                            <li>\n");
+      out.write("                        <a href=\"../cliente/\"><i class=\"fa fa-fw fa-bar-chart-o\"></i> Cliente</a>\n");
+      out.write("                    </li>\n");
+      out.write("                            <li>\n");
+      out.write("                        <a href=\"../usuario/\"><i class=\"fa fa-fw fa-bar-chart-o\"></i> Usuario</a>\n");
+      out.write("                    </li>\n");
+      out.write("                          <li>\n");
+      out.write("                        <a href=\"../status/\"><i class=\"fa fa-fw fa-bar-chart-o\"></i> Status</a>\n");
+      out.write("                    </li>\n");
       out.write("                </ul>\n");
       out.write("            </div>\n");
       out.write("            <!-- /.navbar-collapse -->\n");
@@ -151,7 +159,22 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
 
     ClienteDAO dao = new ClienteDAO();
     List<Cliente> lista;
-    lista = dao.listar();
+     if(request.getParameter("codigo")!=null){
+        Cliente obj = dao.buscarPorChavePrimaria(Integer.parseInt(request.getParameter("codigo")));
+        if(obj!=null){
+            
+            Boolean funcionou =dao.excluir(obj);
+            if(funcionou){
+                
+            }
+        }
+    }
+  if (request.getParameter("filtro") == null || request.getParameter("filtro").isEmpty()) {
+        lista = dao.listar();
+
+    } else {
+        lista = dao.filtrar(request.getParameter("filtro"));
+    }
     
       out.write("\n");
       out.write("<div class=\"row\">\n");
@@ -160,6 +183,12 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            Gerenciamento de Clientes\n");
       out.write("\n");
       out.write("        </h1>\n");
+      out.write("                  <div>    \n");
+      out.write("    <form method=\"post\">\n");
+      out.write("        <input type=\"text\" name=\"filtro\" placeholder=\"Pesquise Aqui\"> </br>\n");
+      out.write("        <input type=\"submit\" value=\"Pesquisar\">\n");
+      out.write("    </form>\n");
+      out.write("</div>\n");
       out.write("        <ol class=\"breadcrumb\">\n");
       out.write("            <li>\n");
       out.write("                <i class=\"fa fa-dashboard\"></i>  <a href=\"index.jsp\">listagem</a>\n");
@@ -200,11 +229,12 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                        <th>Código</th>\n");
       out.write("                        <th>Nome</th>\n");
       out.write("                         <th>Email</th>\n");
+      out.write("                         <th>Senha</th>\n");
       out.write("                          <th>Endereco</th>\n");
       out.write("                           <th>Bairro</th>\n");
       out.write("                            <th>Cidade</th>\n");
       out.write("                            <th>Estado</th>\n");
-      out.write("                            <th>Cep<th>\n");
+      out.write("                            <th>Cep</th>\n");
       out.write("                        <th >Ações</th>\n");
       out.write("                    </tr>\n");
       out.write("                </thead>\n");
@@ -217,7 +247,7 @@ for(Cliente item:lista)
                     
       out.write("\n");
       out.write("                    <tr>\n");
-      out.write("                        <td>1</td>\n");
+      out.write("                    \n");
       out.write("                        <td>");
       out.print(item.getCodigo());
       out.write("</td>\n");
@@ -227,6 +257,7 @@ for(Cliente item:lista)
       out.write("                        <td>");
       out.print(item.getEmail());
       out.write("</td>\n");
+      out.write("                                    <td><b>*****</b></td>\n");
       out.write("                           <td>");
       out.print(item.getEndereco());
       out.write("</td>\n");
@@ -246,9 +277,9 @@ for(Cliente item:lista)
       out.write("                        <td><a href=\"upd.jsp?codigo=");
       out.print(item.getCodigo());
       out.write("\" class=\"btn  btn-primary btn-sm\">Alterar</a>\n");
-      out.write("                            <a href=\"del.jsp?codigo=");
+      out.write("                            <buttom class=\"btn btn-danger btn-sm\" data-toggle=\"modal\" data-target=\"#myModal\" onclick=\"codigo=");
       out.print(item.getCodigo());
-      out.write("\" class=\"btn  btn-primary btn-sm\">Excluir</a>  \n");
+      out.write("\">Excluir</buttom>  \n");
       out.write("                         </td>\n");
       out.write("                    </tr>\n");
       out.write("                    ");
@@ -267,6 +298,33 @@ for(Cliente item:lista)
       out.write("    </div>\n");
       out.write("    <!-- /.panel -->\n");
       out.write("        </div>\n");
+      out.write("                <div class=\"modal fade\" id=\"myModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n");
+      out.write("    <div class=\"modal-dialog\">\n");
+      out.write("        <div class=\"modal-content\">\n");
+      out.write("            <div class=\"modal-header\">\n");
+      out.write("                <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n");
+      out.write("                <h4 class=\"modal-title\" id=\"myModalLabel\">Exclusao</h4>\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-body\">\n");
+      out.write("               Voce tem certeza que deseja excluir?\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-footer\">\n");
+      out.write("                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Fechar</button>\n");
+      out.write("                <button type=\"button\" class=\"btn btn-primary\" onclick=\"excluir()\">Confirmar exclusao</button>\n");
+      out.write("            </div>\n");
+      out.write("        </div>\n");
+      out.write("        <!-- /.modal-content -->\n");
+      out.write("    </div>\n");
+      out.write("    <!-- /.modal-dialog -->\n");
+      out.write("</div>\n");
+      out.write("<script>\n");
+      out.write("    var codigo;\n");
+      out.write("    function excluir()\n");
+      out.write("    {\n");
+      out.write("        document.location.href = \"index.jsp?codigo=\"+codigo;\n");
+      out.write("    }\n");
+      out.write("<!-- /.modal -->\n");
+      out.write("</script>\n");
       out.write("    ");
       out.write("</div>\n");
       out.write("<!-- /.container-fluid -->\n");

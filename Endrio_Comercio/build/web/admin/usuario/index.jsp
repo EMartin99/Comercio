@@ -5,13 +5,12 @@
 <%
     UsuarioDAO dao = new UsuarioDAO();
     List<Usuario> lista;
-     if(request.getParameter("login")!=null){
-        Usuario obj = dao.buscarPorChavePrimaria(Integer.parseInt(request.getParameter("login")));
+     if(request.getParameter("codigo")!=null){
+        Usuario obj = dao.buscarPorChavePrimaria(Integer.parseInt(request.getParameter("codigo")));
         if(obj!=null){
             
             Boolean funcionou =dao.excluir(obj);
             if(funcionou){
-                
             }
         }
     }
@@ -28,12 +27,7 @@
             Gerenciamento de Usuarios
 
         </h1>
-                  <div>    
-    <form method="post">
-        <input type="text" name="filtro" placeholder="Pesquise Aqui"> </br>
-        <input type="submit" value="Pesquisar">
-    </form>
-    </div>
+              
         <ol class="breadcrumb">
             <li>
                 <i class="fa fa-dashboard"></i>  <a href="index.jsp">listagem</a>
@@ -59,8 +53,8 @@
 <div class="row">
     <div class="panel panel-default">
         <form action="#" method="post">
-            <div class="form-group input-group">
-                <input type="text" class="form-control" placeholder="digite...">
+          <div class="form-group input-group">
+                <input type="text"  name="filtro" class="form-control" placeholder="digite...">
                                 <span class="input-group-btn"><button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button></span>
                             </div>
         </form>
@@ -71,8 +65,10 @@
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
+                        <th>Codigo</th>
                         <th>Login</th>
                         <th>Senha</th>
+                        <th>Admim</th>
                         <th >Ações</th>
                     </tr>
                 </thead>
@@ -83,11 +79,12 @@
                     
                     %>
                     <tr>
-                        
+                        <td><%=item.getCodigo()%></td>
                         <td><%=item.getLogin()%></td>
-                        <td><%=item.getSenha()%></td>
-                        <td><a href="upd.jsp?codigo=<%=item.getLogin()%>" class="btn  btn-primary btn-sm">Alterar</a>
-                            <a href="index.jsp?codigo=<%=item.getLogin()%>" class="btn  btn-primary btn-sm">Excluir</a>  
+                        <td>***************</td>
+                        <td><%=item.getAdmin()%></td>
+                  <td><a href="upd.jsp?codigo=<%=item.getCodigo()%>" class="btn  btn-primary btn-sm">Alterar</a> 
+                <buttom class="btn btn-danger btn-sm" data-toggle="modal" data-target="#myModal" onclick="codigo=<%=item.getCodigo()%>">Excluir</buttom>
                          </td>
                     </tr>
                     <%
@@ -104,4 +101,33 @@
     </div>
     <!-- /.panel -->
         </div>
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Exclusao</h4>
+            </div>
+            <div class="modal-body">
+               Voce tem certeza que deseja excluir?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="excluir()">Confirmar exclusao</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script>
+    var codigo;
+    function excluir()
+    {
+        document.location.href = "index.jsp?codigo="+codigo;
+    }
+<!-- /.modal -->
+</script>
+    <%@include file="../rodape.jsp" %>
+
     <%@include file="../rodape.jsp" %>

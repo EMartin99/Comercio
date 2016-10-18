@@ -9,7 +9,14 @@ Usuario obj;
 if(request.getMethod().equals("POST")){
   UsuarioDAO dao = new UsuarioDAO();
 obj = new Usuario();
+ obj.setCodigo(Integer.parseInt(request.getParameter("txtCodigo")));
   obj.setLogin(request.getParameter("txtLogin"));
+      obj.setSenha(request.getParameter("txtSenha"));
+   if (request.getParameter("admin") != null) {
+            obj.setAdmin(true);
+        } else {
+            obj.setAdmin(false);
+        }
   Boolean resultado = dao.alterar(obj);
   if(resultado)
   {
@@ -21,13 +28,13 @@ obj = new Usuario();
   }
   
 }else{
-if(request.getParameter("login")==null)
+if(request.getParameter("codigo")==null)
 {
     response.sendRedirect("index.jsp");
      return;
 }
 UsuarioDAO dao = new UsuarioDAO();
- obj = dao.buscarPorChavePrimaria(Integer.parseInt(request.getParameter("login")));
+ obj = dao.buscarPorChavePrimaria(Integer.parseInt(request.getParameter("codigo")));
 if (obj ==null){
      response.sendRedirect("index.jsp");
         return;
@@ -64,16 +71,23 @@ if (obj ==null){
             <form action="#" method="post">
                 
                 <div class="col-lg-6">
-
+                      <div class="form-group">
+                   <label>Código</label>
+                        <input class="form-control" type="text" name="txtCodigo" readonly value="<%=obj.getCodigo()%>"/>
+                    </div>
                     <div class="form-group">
                         <label>Login</label>
-                        <input class="form-control" type="text" name="txtLogin" readonly value="<%=obj.getLogin()%>"/>
+                        <input class="form-control" type="text" name="txtLogin"  value="<%=obj.getLogin()%>"/>
                     </div>
-                    
-          
-                    
-
-
+                          <div class="form-group">
+                        <label>Senha</label>
+                        <input class="form-control" type="password" name="txtSenha" readonly required value="<%=obj.getSenha()%>"/>
+                    </div>
+           <div class="form-group">
+                        <label>Admin</label>
+                        <input class="form-control" type="checkbox" name="admin" value="<%=obj.getAdmin()%>"/>
+                    </div>
+  
                     <button class="btn btn-primary btn-sm" type="submit" >Salvar</button>
                 
             

@@ -1,3 +1,4 @@
+<%@page import="util.Criptografia"%>
 <%@page import="modelo.Usuario"%>
 <%@page import="DAO.UsuarioDAO"%>
 <%@include file="../cabecalho.jsp" %>
@@ -7,7 +8,7 @@ String classe = "alert-danger";
 if(request.getMethod().equals("POST")){
   UsuarioDAO dao = new UsuarioDAO();
   Usuario obj = new Usuario();
-  obj.setSenha(request.getParameter("txtNome"));
+   obj.setSenha(Criptografia.convertPasswordToMD5(request.getParameter("txtSenha")));
   obj.setLogin(request.getParameter("txtLogin"));
          if (request.getParameter("admin") != null) {
             obj.setAdmin(true);
@@ -67,12 +68,12 @@ if(request.getMethod().equals("POST")){
                     <div class="form-group">
                         <label>Login</label>
                         
-                        <input class="form-control" type="text" name="txtLogin" required />
+                        <input class="form-control" type="text" name="txtLogin"  required />
                     </div>
                               <div class="form-group">
                         <label>Senha</label>
                         
-                        <input class="form-control" type="password" name="txtNome" required />
+                        <input class="form-control" type="password" name="txtSenha" required />
                     </div>
                     
              <label>Admin</label>

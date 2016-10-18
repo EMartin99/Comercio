@@ -3,9 +3,10 @@ package org.apache.jsp.admin.produto;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
-import java.util.List;
-import modelo.Produto;
+import util.Upload;
 import DAO.ProdutoDAO;
+import modelo.Produto;
+import java.util.List;
 
 public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
@@ -50,6 +51,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       _jspx_out = out;
       _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
 
+      out.write("\n");
       out.write("\n");
       out.write("\n");
       out.write("\n");
@@ -157,10 +159,28 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <!-- Page Heading -->\n");
       out.write('\n');
 
+    Upload upload = new Upload();
     ProdutoDAO dao = new ProdutoDAO();
     List<Produto> lista;
-    lista = dao.listar();
-    
+
+    //verifico se é escluir
+    if (request.getParameter("codigo") != null) {
+        Produto obj = dao.buscarPorChavePrimaria(Integer.parseInt(request.getParameter("codigo")));
+        if (obj != null) {
+            Boolean funcionou = dao.excluir(obj);
+            if (funcionou) {
+                //aqui depois vai ter uma janela
+            }
+        }
+    }
+    //fim da exclusão
+  if (request.getParameter("filtro") == null || request.getParameter("filtro").isEmpty()) {
+        lista = dao.listar();
+
+    } else {
+        lista = dao.filtrar(request.getParameter("filtro"));
+    }
+
       out.write("\n");
       out.write("<div class=\"row\">\n");
       out.write("    <div class=\"col-lg-12\">\n");
@@ -185,75 +205,99 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <div class=\"panel-body\">\n");
       out.write("\n");
       out.write("            <a  href=\"add.jsp\" class=\"btn  btn-primary btn-sm fa fa-plus-square-o\" >Novo</a>\n");
-      out.write("            \n");
+      out.write("\n");
       out.write("        </div>\n");
       out.write("    </div>\n");
       out.write("</div>\n");
       out.write("<!-- /.row -->\n");
       out.write("<div class=\"row\">\n");
       out.write("    <div class=\"panel panel-default\">\n");
-      out.write("        <form action=\"#\" method=\"post\">\n");
-      out.write("            <div class=\"form-group input-group\">\n");
-      out.write("                <input type=\"text\" class=\"form-control\" placeholder=\"digite...\">\n");
+      out.write("        <form action=\"#\" method=\"post\" >\n");
+      out.write("               <div class=\"form-group input-group\">\n");
+      out.write("                <input type=\"text\"  name=\"filtro\" class=\"form-control\" placeholder=\"digite...\">\n");
       out.write("                                <span class=\"input-group-btn\"><button class=\"btn btn-default\" type=\"submit\"><i class=\"fa fa-search\"></i></button></span>\n");
       out.write("                            </div>\n");
       out.write("        </form>\n");
       out.write("        <div class=\"panel-body\">\n");
-      out.write("           \n");
-      out.write("        \n");
-      out.write("        <div class=\"table-responsive\">\n");
-      out.write("            <table class=\"table table-bordered table-hover\">\n");
-      out.write("                <thead>\n");
-      out.write("                    <tr>\n");
-      out.write("                        <th>Código</th>\n");
-      out.write("                        <th>Titulo</th>\n");
-      out.write("                        <th>Descricao</th>\n");
-      out.write("                        <th>Quantidade</th>\n");
-      out.write("                        <th>Preco</th>\n");
-      out.write("                        <th >Ações</th>\n");
-      out.write("                    </tr>\n");
-      out.write("                </thead>\n");
-      out.write("                <tbody>\n");
-      out.write("                    ");
-for(Produto item:lista)
-                    {
-                        
-                    
-                    
       out.write("\n");
-      out.write("                    <tr>\n");
-      out.write("                 \n");
-      out.write("                        <td>");
+      out.write("\n");
+      out.write("            <div class=\"table-responsive\">\n");
+      out.write("                <table class=\"table table-bordered table-hover\">\n");
+      out.write("                    <thead>\n");
+      out.write("                        <tr>\n");
+      out.write("                            <th>Código</th>\n");
+      out.write("                            <th>Titulo</th>\n");
+      out.write("                            <th>Descrição</th>\n");
+      out.write("                            <th>Quantidade</th>\n");
+      out.write("                            <th>Preço</th>\n");
+      out.write("                            <th>Categoria</th>\n");
+      out.write("                            <th>Marca</th>\n");
+      out.write("                            <th>Destaque</th>\n");
+      out.write("                            <th>Imagem(1)</th>\n");
+      out.write("                            <th>Imagem(2)</th>\n");
+      out.write("                            <th>Imagem(3)</th>\n");
+      out.write("                            <th >Ações</th>\n");
+      out.write("                        </tr>\n");
+      out.write("                    </thead>\n");
+      out.write("                    <tbody>\n");
+      out.write("                        ");
+
+                            for (Produto item : lista) {
+                        
+      out.write("\n");
+      out.write("                        <tr>\n");
+      out.write("                            <td>");
       out.print(item.getCodigo());
       out.write("</td>\n");
-      out.write("                        <td>");
+      out.write("                            <td>");
       out.print(item.getTitulo());
       out.write("</td>\n");
-      out.write("                          <td>");
+      out.write("                            <td>");
       out.print(item.getDescricao());
       out.write("</td>\n");
       out.write("                            <td>");
       out.print(item.getQuant());
       out.write("</td>\n");
-      out.write("                              <td>");
+      out.write("                            <td>");
       out.print(item.getPreco());
       out.write("</td>\n");
-      out.write("                        <td><a href=\"upd.jsp?codigo=");
+      out.write("                            <td>");
+      out.print(item.getCodcategoria().getNome());
+      out.write("</td>\n");
+      out.write("                            <td>");
+      out.print(item.getCodmarca().getNome());
+      out.write("</td>\n");
+      out.write("                            <td>");
+      out.print(item.getDestaque());
+      out.write("</td>\n");
+      out.write("                             <td><img src=\"../../Fotos/");
+      out.print(item.getImagem1());
+      out.write("\" width=\"65\" height=\"65\" /></td>\n");
+      out.write("                            <td><img src=\"../../Fotos/");
+      out.print(item.getImagem2());
+      out.write("\" width=\"65\" height=\"65\" /></td>\n");
+      out.write("                            <td><img src=\"../../Fotos/");
+      out.print(item.getImagem3());
+      out.write("\" width=\"65\" height=\"65\" /></td>\n");
+      out.write("\n");
+      out.write("                            <td><a href=\"upd.jsp?codigo=");
       out.print(item.getCodigo());
       out.write("\" class=\"btn  btn-primary btn-sm\">Alterar</a>\n");
-      out.write("                            <a href=\"index.jsp?codigo=");
+      out.write("                            <buttom class=\"btn btn-danger btn-sm\" data-toggle=\"modal\" data-target=\"#myModal\" onclick=\"codigo=");
       out.print(item.getCodigo());
-      out.write("\" class=\"btn  btn-primary btn-sm\">Excluir</a>  \n");
-      out.write("                         </td>\n");
-      out.write("                    </tr>\n");
-      out.write("                    ");
-
-                        }
-
+      out.write("\">Excluir</buttom>  \n");
+      out.write("                            </td>\n");
+      out.write("                        </tr>\n");
       out.write("\n");
-      out.write("                </tbody>\n");
-      out.write("            </table>\n");
-      out.write("           \n");
+      out.write("                        ");
+
+                            }
+                        
+      out.write("\n");
+      out.write("\n");
+      out.write("                    </tbody>\n");
+      out.write("                </table>\n");
+      out.write("\n");
       out.write("                <!-- /.table-responsive -->\n");
       out.write("            </div>\n");
       out.write("\n");
@@ -261,8 +305,34 @@ for(Produto item:lista)
       out.write("        <!-- /.panel-body -->\n");
       out.write("    </div>\n");
       out.write("    <!-- /.panel -->\n");
+      out.write("</div>\n");
+      out.write("                        <div class=\"modal fade\" id=\"myModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n");
+      out.write("    <div class=\"modal-dialog\">\n");
+      out.write("        <div class=\"modal-content\">\n");
+      out.write("            <div class=\"modal-header\">\n");
+      out.write("                <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n");
+      out.write("                <h4 class=\"modal-title\" id=\"myModalLabel\">Exclusao</h4>\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-body\">\n");
+      out.write("               Voce tem certeza que deseja excluir?\n");
+      out.write("            </div>\n");
+      out.write("            <div class=\"modal-footer\">\n");
+      out.write("                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Fechar</button>\n");
+      out.write("                <button type=\"button\" class=\"btn btn-primary\" onclick=\"excluir()\">Confirmar exclusao</button>\n");
+      out.write("            </div>\n");
       out.write("        </div>\n");
-      out.write("    ");
+      out.write("        <!-- /.modal-content -->\n");
+      out.write("    </div>\n");
+      out.write("    <!-- /.modal-dialog -->\n");
+      out.write("</div>\n");
+      out.write("<script>\n");
+      out.write("    var codigo;\n");
+      out.write("    function excluir()\n");
+      out.write("    {\n");
+      out.write("        document.location.href = \"index.jsp?codigo=\"+codigo;\n");
+      out.write("    }\n");
+      out.write("<!-- /.modal -->\n");
+      out.write("</script>\n");
       out.write("</div>\n");
       out.write("<!-- /.container-fluid -->\n");
       out.write("\n");

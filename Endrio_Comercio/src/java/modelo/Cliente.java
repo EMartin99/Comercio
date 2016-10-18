@@ -23,8 +23,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cliente")
 @NamedQueries({
-    @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c")})
-//@NamedQuery(name = "Cliente.findFilter", query = "SELECT c FROM  Cliente c WHERE c.nome like :filtro or" + " c.nome like :filtro")
+    @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c"),
+    @NamedQuery(name="Cliente.filtro", query="Select c from Cliente c where c.nome like :filtro OR c.email like :filtro OR c.estado like :filtro OR c.cidade like :filtro OR c.bairro like :filtro OR c.endereco like :filtro OR c.cep like :filtro")})
 public class Cliente implements Serializable {
 
     private static final long serialVersionUID = 1L;

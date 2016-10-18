@@ -1,83 +1,74 @@
+<%@page import="DAO.CategoriaDAO"%>
+<%@page import="DAO.MarcaDAO"%>
+<%@page import="DAO.ProdutoDAO"%>
+<%@page import="util.Upload"%>
+<%@page import="java.math.BigInteger"%>
 <%@page import="java.math.BigDecimal"%>
 <%@page import="modelo.Categoria"%>
-<%@page import="modelo.Marca"%>
 <%@page import="java.util.List"%>
-<%@page import="DAO.MarcaDAO"%>
-<%@page import="DAO.CategoriaDAO"%>
-<%@page import="util.Upload"%>
+<%@page import="modelo.Marca"%>
 <%@page import="modelo.Produto"%>
-<%@page import="DAO.ProdutoDAO"%>
 <%@include file="../cabecalho.jsp" %>
 <%
-  String msg = "";
-    String classe = "";
-    Integer count = 0;
-    CategoriaDAO Categoriadao = new CategoriaDAO();
-    MarcaDAO Marcadao = new MarcaDAO();
-    List<Categoria> clista = Categoriadao.listar();
-    List<Marca> mlista = Marcadao.listar();
-    Upload update = new Upload();
-    update.setFolderUpload("imagens");
-    if (request.getMethod().equals("POST")) {
-        if (update.formProcess(getServletContext(), request)) {
-            Produto obj = new Produto();
-            ProdutoDAO dao = new ProdutoDAO();
-            if (update.getForm().get("titulo") != null && !update.getForm().get("titulo").toString().trim().isEmpty()) {
-                obj.setTitulo((update.getForm().get("titulo").toString()));
-            }
-            if (update.getForm().get("descricao") != null && !update.getForm().get("descricao").toString().trim().isEmpty()) {
-                obj.setDescricao((update.getForm().get("descricao").toString()));
-            }
-            if (update.getForm().get("quant") != null && !update.getForm().get("quant").toString().trim().isEmpty()) {
-                obj.setQuant(Integer.parseInt(update.getForm().get("quant").toString()));
-            }
-            if (update.getForm().get("preco") != null && !update.getForm().get("preco").toString().trim().isEmpty()) {
-                obj.setPreco(BigDecimal.valueOf(Double.parseDouble(update.getForm().get("preco").toString())));
-            }
-            if (update.getForm().get("codcategoria") != null && !update.getForm().get("codcategoria").toString().trim().isEmpty()) {
-                Categoria citem = Categoriadao.buscarPorChavePrimaria(Integer.parseInt(update.getForm().get("codcategoria").toString()));
-                if (clista.contains(citem)) {
-                    obj.setCodcategoria(Categoriadao.buscarPorChavePrimaria(Integer.parseInt((update.getForm().get("codcategoria").toString()))));
-                } else {
-                    count++;
-                    msg += "Selecione categoria";
-                    classe = "alert-danger";
-                }
-            } 
-            if (update.getForm().get("codmarca") != null && !update.getForm().get("codmarca").toString().trim().isEmpty()) {
-                Marca mitem = Marcadao.buscarPorChavePrimaria(Integer.parseInt(update.getForm().get("codmarca").toString()));
-                if (mlista.contains(mitem)) {
-                    obj.setCodmarca(Marcadao.buscarPorChavePrimaria(Integer.parseInt((update.getForm().get("codmarca").toString()))));
-                } else {
-                    count++;
-                    msg += "Selecione Marca";
-                    classe = "alert-danger";
-                }
-            }
-            if (update.getForm().get("destaque") != null) {
-                obj.setDestaque(true);
-            } else {
-                obj.setDestaque(false);
-            }
-            if (update.getFiles().size() != 0 && update.getFiles().get(0) != null && !update.getFiles().get(0).toString().trim().isEmpty()) {
-                obj.setImagem1((update.getFiles().get(0).toString()));
-            }
-            if (update.getFiles().size() >= 2 && update.getFiles().get(1) != null && !update.getFiles().get(1).toString().trim().isEmpty()) {
-                obj.setImagem2((update.getFiles().get(1).toString()));
-            }
-            if (update.getFiles().size() >= 3 && update.getFiles().get(2) != null && !update.getFiles().get(2).toString().trim().isEmpty()) {
-                obj.setImagem3((update.getFiles().get(2).toString()));
-            }
-            if (count == 0 && dao.incluir(obj)) {
-                response.sendRedirect("add-ok.jsp");
-            } else {
-                msg += "Tente Novamente!";
-                classe = "alert-danger";
-            }
+    String msg = "Digite abaixo";
+    String classe = "alert-danger";
+    
+    Upload upload = new Upload();
+    upload.setFolderUpload("Fotos");
+
+    Produto obj = new Produto();
+    ProdutoDAO dao = new ProdutoDAO();
+
+    MarcaDAO mDAO = new MarcaDAO();
+    List<Marca> mLista = mDAO.listar();
+    CategoriaDAO cDAO = new CategoriaDAO();
+    List<Categoria> cLista = cDAO.listar();
+    
+    if (request.getMethod().equals("POST")) {     
+        if (upload.formProcess(getServletContext(), request)) {
+        obj.setTitulo(upload.getForm().get("txtTitulo").toString());
+        obj.setDescricao(upload.getForm().get("txtDesc").toString());
+        obj.setImagem1(upload.getFiles().get(0));
+        obj.setQuant(Integer.parseInt(upload.getForm().get("txtQuant").toString()));                
+        BigInteger X = BigInteger.valueOf(Long.valueOf(upload.getForm().get("txtPreco").toString()).longValue());
+        obj.setPreco(X);
+        Categoria categoria = new Categoria();
+        categoria.setCodigo(Integer.parseInt(upload.getForm().get("txtCat").toString()));
+        obj.setCodcategoria(categoria);
+        Marca marca = new Marca();
+        marca.setCodigo(Integer.parseInt(upload.getForm().get("txtMarca").toString()));
+        obj.setCodmarca(marca);              
+        if (upload.getForm().get("txtDest") != null) {
+            obj.setDestaque(true);
+        } else {
+            obj.setDestaque(false);
+        }
+        if (obj == null) {
+            response.sendRedirect("index.jsp");
+            return;
+        } else {
+            if (upload.getFiles().size() > 1) {
+            obj.setImagem2(upload.getFiles().get(1));
+        }
+            if (upload.getFiles().size()>2) {
+            obj.setImagem3(upload.getFiles().get(2));
+        }
+            dao.incluir(obj);
+        }
+
+        Boolean resultado = dao.incluir(obj);
+        if (resultado) {
+            msg = "Produto Adicionado com Sucesso";
+            classe = "alert-success";
+        } else {
+            msg = "Não foi Possivel Adicionar";
+            classe = "alert-danger";
         }
     }
+    }
+
+
 %>
-  
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
@@ -98,79 +89,87 @@
 <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading">
-            Produto
+            Usuário
         </div>
         <div class="panel-body">
 
             <div class="alert <%=classe%>">
                 <%=msg%>
             </div>
-            <form action="#" method="post">
-                
+            <form action="#" method="post" enctype="multipart/form-data">
+
                 <div class="col-lg-6">
 
                     <div class="form-group">
                         <label>Titulo</label>
-                        
-                        <input class="form-control" type="text" name="titulo" required />
+                        <input class="form-control" type="text" name="txtTitulo" required />
                     </div>
-                        <div class="form-group">
-                        <label>Descricao</label>
-                        
-                        <input class="form-control" type="text" name="descricao" required />
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input class="form-control" type="text" name="txtDesc" required />
                     </div>
-                    
-                        <div class="form-group">
+                    <div class="form-group">
                         <label>Quantidade</label>
-                        
-                        <input class="form-control" type="text" name="quant" required />
+                        <input class="form-control" type="number" name="txtQuant" required />
                     </div>
-                              
+                    <div class="form-group">
                         <label>Preço</label>
-                        <input class="form-control" name="preco" type="number" required />
-                        
-                              <label>Categoria</label>
-                        <select class="form-control" name="codcategoria">
-                            <option>Selecionar Categoria</option>
+                        <input class="form-control" type="number" name="txtPreco" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select name="txtCat" class="form-control" required>
+                            <option value="">Selecione</option>
                             <%
-                                for (Categoria item : clista){
+                                for (Categoria cat : cLista) {
                             %>
-                            <option value="<%=item.getCodigo()%>"><%=item.getNome()%></option>
+                            <option value="<%=cat.getCodigo()%>" ><%=cat.getNome()%></option>
                             <%
                                 }
                             %>
+
                         </select>
-                        
-                        
+                    </div>
+
+                    <div class="form-group">
                         <label>Marca</label>
-                        <select  class="form-control" name="codmarca">
-                            <option>Selecionar Marca</option>
+                        <select name="txtMarca" class="form-control" required>
+                            <option value="">Selecione</option>
                             <%
-                                for (Marca item : mlista){
+                                for (Marca mar : mLista) {
                             %>
-                            <option value="<%=item.getCodigo()%>"><%=item.getNome()%></option>
+                            <option value="<%=mar.getCodigo()%>" ><%=mar.getNome()%></option>
                             <%
                                 }
                             %>
-                               </select>
-                        
-                              <label>Primeira imagem</label>
-                        <input class="form-control" name="imagem1" type="file" required />
-                        
-                        <label>Segunda imagem</label>
-                        <input class="form-control" name="imagem2" type="file"  />
-                        
-                        <label>Terceira imagem</label>
-                        <input class="form-control" name="imagem3" type="file"  />
-                    
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Imagem</label>
+                        <input class="form-control" type="file" name="txtImg1" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Imagem</label>
+                        <input class="form-control" type="file" name="txtImg2" />
+                    </div>
+                    <div class="form-group">
+                        <label>Imagem</label>
+                        <input class="form-control" type="file" name="txtImg3" />
+                    </div>
                     <div class="form-group">
                         <label>Destaque</label>
-                   <input type="checkbox" name="destaque" /><br />
+                        <input class="form-control" type="checkbox" name="txtDest" />
                     </div>
-                    
 
-                    <button class="btn btn-primary btn-sm" type="submit" >Salvar</button>
-                
+
+
+
+
+                    <button class="btn btn-primary btn-sm" type="submit">Salvar</button>
+
             </form>
 
         </div>

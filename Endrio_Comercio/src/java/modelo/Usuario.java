@@ -9,37 +9,61 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author aluno
+ * @author Endrio Martin
  */
 @Entity
 @Table(name = "usuario")
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
-//@NamedQuery(name = "Usuario.findFilter", query = "SELECT u FROM  Usuario u WHERE u.login like :filtro or" + " u.login like :filtro")
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
+  @NamedQuery(name = "Usuario.filtro", query = "Select u from Usuario u where u.login like :filtro")})
 public class Usuario implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "codigo")
+    private Integer codigo;
     @Basic(optional = false)
     @Column(name = "login")
     private String login;
+    @Basic(optional = false)
     @Column(name = "senha")
     private String senha;
+    @Basic(optional = false)
     @Column(name = "admin")
-    private Boolean admin;
+    private boolean admin;
 
     public Usuario() {
     }
 
-    public Usuario(String login) {
+    public Usuario(Integer codigo) {
+        this.codigo = codigo;
+    }
+
+    public Usuario(Integer codigo, String login, String senha, boolean admin) {
+        this.codigo = codigo;
         this.login = login;
+        this.senha = senha;
+        this.admin = admin;
+    }
+
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
     }
 
     public String getLogin() {
@@ -58,18 +82,18 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public Boolean getAdmin() {
+    public boolean getAdmin() {
         return admin;
     }
 
-    public void setAdmin(Boolean admin) {
+    public void setAdmin(boolean admin) {
         this.admin = admin;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (login != null ? login.hashCode() : 0);
+        hash += (codigo != null ? codigo.hashCode() : 0);
         return hash;
     }
 
@@ -80,7 +104,7 @@ public class Usuario implements Serializable {
             return false;
         }
         Usuario other = (Usuario) object;
-        if ((this.login == null && other.login != null) || (this.login != null && !this.login.equals(other.login))) {
+        if ((this.codigo == null && other.codigo != null) || (this.codigo != null && !this.codigo.equals(other.codigo))) {
             return false;
         }
         return true;
@@ -88,7 +112,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "modelo.Usuario[ login=" + login + " ]";
+        return "modelo.Usuario[ codigo=" + codigo + " ]";
     }
     
 }

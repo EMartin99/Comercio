@@ -26,8 +26,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "marca")
 @NamedQueries({
-    @NamedQuery(name = "Marca.findAll", query = "SELECT m FROM Marca m")})
-//@NamedQuery(name = "Marca.findFilter", query = "SELECT m FROM Marca m WHERE m.nome like :filtro or" + " m.nome like :filtro")
+    @NamedQuery(name = "Marca.findAll", query = "SELECT m FROM Marca m"),
+ @NamedQuery(name = "Marca.filtro", query = "Select m from Marca m where m.nome like :filtro")})
 public class Marca implements Serializable {
 
     private static final long serialVersionUID = 1L;

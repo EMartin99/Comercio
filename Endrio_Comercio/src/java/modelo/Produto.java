@@ -29,10 +29,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "produto")
 @NamedQueries({
-    @NamedQuery(name = "Produto.findAll", query = "SELECT p FROM Produto p")})
-//@NamedQuery(name = "Produto.findFilter", query = "SELECT p FROM  Produto p WHERE p.titulo like :filtro or" + " p.titulo like :filtro")
+    @NamedQuery(name = "Produto.findByMarca", query = "SELECT p FROM Produto p WHERE p.codmarca.codigo = :codigo"),
+    @NamedQuery(name = "Produto.findByCategoria", query = "SELECT p FROM Produto p WHERE p.codcategoria.codigo = :codigo"),
+    @NamedQuery(name = "Produto.findAll", query = "SELECT p FROM Produto p"),
+@NamedQuery(name = "Produto.filtro", query = "Select p from Produto p where p.titulo like :filtro OR  p.codcategoria.nome like :filtro OR p.codmarca.nome like :filtro")})
 public class Produto implements Serializable {
-
+  
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

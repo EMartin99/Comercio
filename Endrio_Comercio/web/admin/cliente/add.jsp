@@ -100,7 +100,7 @@ if(request.getMethod().equals("POST")){
                            <div class="form-group">
                         <label>Estado</label>
                         
-                        <input class="form-control" type="text" name="txtEatado" required />
+                        <input class="form-control" type="text" name="txtEstado" required />
                     </div>
                            <div class="form-group">
                         <label>Cep</label>

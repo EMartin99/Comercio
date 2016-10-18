@@ -11,6 +11,7 @@ if(request.getMethod().equals("POST")){
 obj = new Cliente();
   obj.setCodigo(Integer.parseInt(request.getParameter("txtCodigo")));
     obj.setNome(request.getParameter("txtNome"));
+    obj.setSenha(request.getParameter("txtSenha"));
     obj.setEmail(request.getParameter("txtEmail"));
       obj.setEndereco(request.getParameter("txtEndereco"));
              obj.setBairro(request.getParameter("txtBairro"));
@@ -83,7 +84,11 @@ if (obj ==null){
                         <input class="form-control" type="text" name="txtNome" required value="<%=obj.getNome()%>"/>
                     </div>
                     
-                          
+                         <div class="form-group">
+                        <label>Senha</label>
+                        <input class="form-control" type="password" name="txtSenha" readonly required value="<%=obj.getSenha()%>"/>
+                    </div>
+                   
                     <div class="form-group">
                         <label>Email</label>
                         <input class="form-control" type="text" name="txtEmail" required value="<%=obj.getEmail()%>"/>
